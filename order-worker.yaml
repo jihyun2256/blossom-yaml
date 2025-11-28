@@ -23,13 +23,13 @@ spec:
         - name: PORT
           value: "3006"
         - name: DB_HOST
-          value: "sb3.cluster-cpuskg4g6hoy.ap-northeast-2.rds.amazonaws.com"
+          value: "sb3-u1-aurora.cluster-cpuskg4g6hoy.ap-northeast-2.rds.amazonaws.com"
         - name: DB_USER
           value: "admin"
         - name: DB_PASSWORD
           value: "tqdqntkawh"
         - name: DB_NAME
-          value: "sb3"
+          value: "sb3-u1-aurora"
         - name: ORDER_API_URL
           value: "http://order-api:3004"
         - name: AWS_REGION
