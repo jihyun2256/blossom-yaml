@@ -1,0 +1,62 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cart-api
+  namespace: default
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: cart-api
+  template:
+    metadata:
+      labels:
+        app: cart-api
+    spec:
+      containers:
+      - name: cart-api
+        image: 337112169365.dkr.ecr.ap-northeast-2.amazonaws.com/blossom/cart-api:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 3003
+        env:
+        - name: PORT
+          value: "3003"
+        - name: DB_HOST
+          value: "sb3.cluster-cpuskg4g6hoy.ap-northeast-2.rds.amazonaws.com"
+        - name: DB_USER
+          value: "admin"
+        - name: DB_PASSWORD
+          value: "tqdqntkawh"
+        - name: DB_NAME
+          value: "sb3"
+        - name: REDIS_HOST
+          value: "redis-master.default.svc.cluster.local"
+        - name: AWS_REGION
+          value: "ap-northeast-2"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 3003
+          initialDelaySeconds: 10
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /readiness
+            port: 3003
+          initialDelaySeconds: 5
+          periodSeconds: 5
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: cart-api
+  namespace: default
+spec:
+  type: ClusterIP
+  selector:
+    app: cart-api
+  ports:
+  - port: 3003
+    targetPort: 3003
+    protocol: TCP

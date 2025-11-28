@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: order-worker
+  namespace: default
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: order-worker
+  template:
+    metadata:
+      labels:
+        app: order-worker
+    spec:
+      containers:
+      - name: order-worker
+        image: 337112169365.dkr.ecr.ap-northeast-2.amazonaws.com/blossom/order-worker:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 3006
+        env:
+        - name: PORT
+          value: "3006"
+        - name: DB_HOST
+          value: "sb3.cluster-cpuskg4g6hoy.ap-northeast-2.rds.amazonaws.com"
+        - name: DB_USER
+          value: "admin"
+        - name: DB_PASSWORD
+          value: "tqdqntkawh"
+        - name: DB_NAME
+          value: "sb3"
+        - name: ORDER_API_URL
+          value: "http://order-api:3004"
+        - name: AWS_REGION
+          value: "ap-northeast-2"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 3006
+          initialDelaySeconds: 10
+          periodSeconds: 10
